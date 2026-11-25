@@ -153,6 +153,14 @@
       display: block;
     }
 
+    @media (max-width: 1360px) {
+      .badge-code, .badge-student { font-size: 9.5px; padding: 2px 6px; }
+      .brand-title { font-size: 11px; letter-spacing: -0.02em; }
+      .header-actions { gap: 5px; }
+      .btn-action { font-size: 10.6px; padding: 4px 7px; }
+      .slider-filter-btn { font-size: 8.4px; padding: 2px 1px; letter-spacing: -0.2px; }
+    }
+
     .header-actions {
       display: flex;
       align-items: center;
@@ -313,12 +321,12 @@
     .btn-scenario strong {
       display: block;
       font-family: var(--font-display);
-      font-size: 10.4px;
+      font-size: 9.8px;
+      line-height: 1.16;
       color: var(--text-primary);
       margin-bottom: 1px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
+      word-break: break-word;
     }
 
     .scen-sub {
@@ -702,8 +710,8 @@
     }
 
     .param-num {
-      width: 46px;
-      padding: 1px 4px;
+      width: 44px;
+      padding: 1px 3px;
       font-family: var(--font-mono);
       font-weight: 700;
       font-size: 10px;
@@ -715,6 +723,9 @@
       font-variant-numeric: tabular-nums;
       -moz-appearance: textfield;
       transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .slider-pair-grid .param-num {
+      width: 40px;
     }
 
     .param-num::-webkit-outer-spin-button,
@@ -747,7 +758,7 @@
       font-weight: 600;
       color: var(--text-muted);
       white-space: nowrap;
-      min-width: 24px;
+      min-width: 14px;
     }
 
     .slider-val {
@@ -1680,10 +1691,10 @@
   </div>
 
   <!-- Modal Học liệu UET_COURSEWARE_3D -->
-  <div id="theory-modal" class="modal-overlay">
+  <div id="theory-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="theory-modal-title">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title">Học Liệu Chuẩn UET_COURSEWARE_3D — Bài 7 (Mục 7.3) &amp; Cẩm Nang Vấn Đáp KTCS-27</div>
+        <div class="modal-title" id="theory-modal-title">Học Liệu Chuẩn UET_COURSEWARE_3D — Bài 7 (Mục 7.3) &amp; Cẩm Nang Vấn Đáp KTCS-27</div>
         <button id="btn-close-modal" class="close-btn">&times;</button>
       </div>
 
@@ -2693,10 +2704,11 @@
                 const w0 = measureCanvasMath(ctx, vc.lines[0] || '', f0, '700', '"Be Vietnam Pro", "Segoe UI", sans-serif');
                 const w1 = measureCanvasMath(ctx, vc.lines[1] || '', f1, '700', '"JetBrains Mono", Consolas, monospace');
                 const w2 = measureCanvasMath(ctx, vc.lines[2] || '', f2, '600', '"JetBrains Mono", Consolas, monospace');
-                const cw = Math.min(285, Math.max(166, Math.ceil(Math.max(w0, w1, w2) + padX * 2)));
+                const maxCardW = Math.min(285, Math.max(176, Math.floor((w - 28) / 2)));
+                const cw = Math.min(maxCardW, Math.max(166, Math.ceil(Math.max(w0, w1, w2) + padX * 2)));
                 const ch = Math.round(52 * zFac);
-                const rx = Math.round(item.x - cw / 2);
-                const ry = Math.round(item.y - ch / 2);
+                const rx = Math.max(6, Math.min(w - cw - 6, Math.round(item.x - cw / 2)));
+                const ry = Math.max(6, Math.min(h - ch - 6, Math.round(item.y - ch / 2)));
                 ctx.shadowColor = 'rgba(15, 23, 42, 0.12)';
                 ctx.shadowBlur = 6;
                 ctx.shadowOffsetY = 2;
@@ -3891,7 +3903,7 @@
         tabGroups[2].add(makeLabelSprite(
           ['HIỆU ỨNG TÀI CHÍNH XANH LÊN WACC', `WACC: ${res.waccTM.toFixed(2)}% → ${res.waccGreen.toFixed(2)}%/năm`, `Tiết kiệm ΔWACC = −${res.deltaWACC.toFixed(2)}% (${res.deltaWACCBps} bps)`],
           '#059669',
-          [-4.25, 6.45 + liftY * 0.32, 0],
+          [-4.75, 6.48 + liftY * 0.32, 0],
           3.45,
           t2GreenFocus ? 1.0 : 0.2
         ));
@@ -3900,7 +3912,7 @@
         tabGroups[2].add(makeLabelSprite(
           ['TRẠM KIỂM SOÁT BIÊN GIỚI CBAM EU & HHI', `Thuế CBAM nộp thêm: ${res.cbamTax.toFixed(2)} USD/tCO_{2}`, res.cbamTax <= 0 ? `Miễn 100% thuế (P* vượt +${(res.pCarbon - p.pCBAM).toFixed(2)}$/t)` : `Phải nộp bổ sung ${res.cbamTax.toFixed(2)}$/t tại EU`],
           res.cbamTax <= 0 ? '#0284C7' : '#E11D48',
-          [3.75, 6.45 + liftY * 0.32, 0],
+          [4.05, 6.48 + liftY * 0.32, 0],
           3.45,
           t2CbamFocus ? 1.0 : 0.2
         ));
@@ -4697,7 +4709,8 @@
         const grA = !isFiltered || layer === 'scs' || layer === 'poor' ? 1.0 : 0.18;
         const cbA = !isFiltered || layer === 'dwl' ? 1.0 : 0.18;
 
-        const xW1 = padL + 10, xW2 = padL + 62, bwW = 36;
+        const s2 = Math.min(1.0, Math.max(0.76, pw / 264));
+        const xW1 = padL + Math.round(8 * s2), xW2 = padL + Math.round(58 * s2), bwW = Math.round(35 * s2);
         ctx2D.globalAlpha = eqA;
         ctx2D.fillStyle = '#0284C7';
         ctx2D.fillRect(xW1, yBase - hEqPx, bwW, hEqPx);
@@ -4729,17 +4742,18 @@
 
         const maxP2D = Math.max(165.0, res.pCarbon * 1.15, p.pCBAM * 1.15, res.cbamTax * 1.15);
         const scaleP = ph / maxP2D;
+        const bwC = Math.round(33 * s2);
         const cbamBars = [
           { lbl: 'P* Nội', val: `${res.pCarbon.toFixed(0)}$`, hPx: res.pCarbon * scaleP, col: '#0284C7', txt: '#0369A1', lift: 0, alpha: !isFiltered || layer === 'ps' || layer === 'dwl' ? 1.0 : 0.18 },
           { lbl: 'CBAM', val: `${p.pCBAM.toFixed(0)}$`, hPx: p.pCBAM * scaleP, col: '#D97706', txt: '#B45309', lift: 0, alpha: cbA },
           { lbl: 'Thuế', val: `${res.cbamTax.toFixed(1)}$`, hPx: Math.max(6, res.cbamTax * scaleP), col: res.cbamTax > 0 ? '#E11D48' : '#059669', txt: res.cbamTax > 0 ? '#BE123C' : '#059669', lift: cutPx * 0.5, alpha: cbA }
         ];
         cbamBars.forEach((b, idx) => {
-          const bx = padL + 132 + idx * 50;
+          const bx = padL + Math.round((124 + idx * 48) * s2);
           const bh = Math.min(ph - 14, b.hPx);
           ctx2D.globalAlpha = b.alpha;
           ctx2D.fillStyle = b.col;
-          ctx2D.fillRect(bx, yBase - bh - b.lift, 34, bh);
+          ctx2D.fillRect(bx, yBase - bh - b.lift, bwC, bh);
           ctx2D.fillStyle = b.txt;
           ctx2D.fillText(b.val, bx + 1, yBase - bh - b.lift - 5);
           ctx2D.globalAlpha = 1.0;
@@ -4754,8 +4768,8 @@
           ctx2D.setLineDash([3, 3]);
           ctx2D.strokeRect(xW1, yBase - BASELINE_RES.waccTM * scaleWacc, bwW, BASELINE_RES.waccTM * scaleWacc);
           ctx2D.strokeRect(xW2, yBase - BASELINE_RES.waccGreen * scaleWacc, bwW, BASELINE_RES.waccGreen * scaleWacc);
-          ctx2D.strokeRect(padL + 132, yBase - BASELINE_RES.pCarbon * scaleP, 34, BASELINE_RES.pCarbon * scaleP);
-          ctx2D.strokeRect(padL + 182, yBase - BASELINE_PARAMS.pCBAM * scaleP, 34, BASELINE_PARAMS.pCBAM * scaleP);
+          ctx2D.strokeRect(padL + Math.round(124 * s2), yBase - BASELINE_RES.pCarbon * scaleP, bwC, BASELINE_RES.pCarbon * scaleP);
+          ctx2D.strokeRect(padL + Math.round(172 * s2), yBase - BASELINE_PARAMS.pCBAM * scaleP, bwC, BASELINE_PARAMS.pCBAM * scaleP);
           ctx2D.restore();
         }
 
